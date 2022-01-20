@@ -23,17 +23,21 @@ namespace Feladatlap
             html = "<!DOCTYPE html>\n<html><head><style>\n" +
                 "@page {\nsize: A4;\nmargin:0;\n}\n" +
                 ".question { \n" +
-                "margin-bottom: 5cm;\n" +
+                "margin-bottom: 2cm;\n" +
                 "text-decoration: underline;\n" +
+                "font-size: 10px;\n" +
                 "}\n" +
                 ".answer {\n" +
                 "margin-bottom: 1cm;\n" +
                 "}\n" +
                 ".examheader {\n" +
                 "width: 100%;\n" +
+                "overflow: hidden;\n" +
+                "margin-bottom: 1cm;\n" +
                 "}\n" +
                 ".headerelement {\n" +
-                "width: auto\n" +
+                "width: 150px;\n" +
+                "float: left;\n" +
                 "}\n" +
                 "</style></head><body>\n";
         }
@@ -71,9 +75,11 @@ namespace Feladatlap
 
         private void generateTopics(string cls)
         {
+            int topicnum = 1;
             foreach(string t in topics)
             {
-                html = html + "<div class=\"" + cls + "\">" + t + "</div>\n";
+                html = html + "<div class=\"" + cls + "\">" + topicnum + ". " + t + "</div>\n";
+                topicnum++;
             }
         }
 

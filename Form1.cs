@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -28,7 +29,17 @@ namespace Feladatlap
             DialogResult res = openRTF.ShowDialog();
             if(res == DialogResult.OK)
             {
-                exams.Load(openRTF.FileName);
+                try
+                {
+                    exams.Load(openRTF.FileName);
+                } catch(XmlException){
+                    MessageBox.Show("Malformed XML file");
+                    return;
+                } catch(IOException)
+                {
+                    MessageBox.Show("Cannot open file");
+                    return;
+                }
                 buttonGenerate.Enabled = true;
                 XmlNodeList langnode = exams.GetElementsByTagName("language");
                 foreach( XmlNode n in langnode)
@@ -78,7 +89,6 @@ namespace Feladatlap
             {
                 // Print
                 questionHTML.Print();
-                answerHTML.Print();
             }
         }
 
