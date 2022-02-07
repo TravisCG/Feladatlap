@@ -80,19 +80,19 @@ namespace Feladatlap
             // megnyitasToolStripMenuItem
             // 
             this.megnyitasToolStripMenuItem.Name = "megnyitasToolStripMenuItem";
-            this.megnyitasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.megnyitasToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.megnyitasToolStripMenuItem.Text = "Open exam...";
             this.megnyitasToolStripMenuItem.Click += new System.EventHandler(this.megnyitasToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(141, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -265,6 +265,7 @@ namespace Feladatlap
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Exam";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.examNumSet)).EndInit();

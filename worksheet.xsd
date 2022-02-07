@@ -3,11 +3,12 @@
   <xs:element name="exams">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="sequence" maxOccurs="1" type="xs:integer" />
         <xs:element maxOccurs="unbounded" name="exam">
           <xs:complexType>
             <xs:sequence>
-              <xs:element maxOccurs="1" name="language" type="xs:string" />
-              <xs:element maxOccurs="1" name="header">
+              <xs:element name="language" type="xs:string" />
+              <xs:element name="header">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element maxOccurs="unbounded" name="element" type="xs:string" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,10 +18,19 @@ namespace Feladatlap
     {
         private int examstartnum;
         private XmlDocument exams;
+        string old_header;
+        string old_footer;
+        const string keyName = @"Software\Microsoft\Internet Explorer\PageSetup";
+        string examfilename;
         public Form1()
         {
             InitializeComponent();
             exams = new XmlDocument();
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName, true);
+            old_footer = (string)key.GetValue("footer");
+            old_header = (string)key.GetValue("header");
+            key.SetValue("footer", "");
+            key.SetValue("header", "");
         }
 
         private void megnyitasToolStripMenuItem_Click(object sender, EventArgs e)
@@ -32,6 +42,7 @@ namespace Feladatlap
                 try
                 {
                     exams.Load(openRTF.FileName);
+                    examfilename = openRTF.FileName;
                 } catch(XmlException){
                     MessageBox.Show("Malformed XML file");
                     return;
@@ -46,6 +57,8 @@ namespace Feladatlap
                 {
                     languageSelect.Items.Add(n.InnerText);
                 }
+                XmlNodeList seq = exams.GetElementsByTagName("sequence");
+                examstartnum = Int32.Parse(seq[0].InnerText);
             }
         }
 
@@ -56,8 +69,8 @@ namespace Feladatlap
 
         private void createOneWorksheet(XmlNode examnode, int num)
         {
-            HTMLcreator qHTML = new HTMLcreator();
-            HTMLcreator aHTML = new HTMLcreator();
+            HTMLcreator qHTML = new HTMLcreator(num);
+            HTMLcreator aHTML = new HTMLcreator(num);
             Random rnd = new Random();
             XmlNodeList header = examnode.SelectNodes("header/element");
             foreach (XmlNode headeelement in header)
@@ -75,9 +88,16 @@ namespace Feladatlap
                 qHTML.addTopic(question);
                 aHTML.addTopic(answer);
             }
-
-            questionHTML.DocumentText = qHTML.toString(OutputType.QUESTION);
+            // This magic is needed to print the document
+            questionHTML.Navigate("about:blank");
+            answerHTML.Navigate("about:blank");
+            questionHTML.Document.OpenNew(true);
+            answerHTML.Document.OpenNew(true);
+            questionHTML.Document.Write(qHTML.toString(OutputType.QUESTION)); // This is need to print the document
+            answerHTML.Document.Write(aHTML.toString(OutputType.ANSWER));
+            questionHTML.DocumentText = qHTML.toString(OutputType.QUESTION); // This is need to see the document in the control
             answerHTML.DocumentText = aHTML.toString(OutputType.ANSWER);
+
             if (checkBox2.Checked)
             {
                 // Save worksheets
@@ -87,25 +107,24 @@ namespace Feladatlap
 
             if (checkBox1.Checked)
             {
-                // Print
                 questionHTML.Print();
             }
         }
 
         private void buttonGenerate_Click(object sender, EventArgs e)
-        {
+        { 
             XmlNodeList l = exams.GetElementsByTagName("language");
-            foreach(XmlNode n in l)
+            foreach (XmlNode n in l)
             {
-                if(n.InnerText == (string)languageSelect.SelectedItem)
+                if (n.InnerText == (string)languageSelect.SelectedItem)
                 {
                     XmlNode examnode = n.ParentNode;
                     for (int i = 0; i < examNumSet.Value; i++)
                     {
-                        createOneWorksheet(examnode, i);
+                        createOneWorksheet(examnode, examstartnum + i);
                     }
                     examstartnum += (int)examNumSet.Value;
-                    System.IO.File.WriteAllText("examnum.txt", "" + examstartnum);
+                    exams.GetElementsByTagName("sequence")[0].InnerText = "" + examstartnum;
                 }
             }
         }
@@ -117,6 +136,14 @@ namespace Feladatlap
             {
                 outPrefix.Text = saveFileDialog1.FileName;
             }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName, true);
+            key.SetValue("footer", old_footer);
+            key.SetValue("header", old_header);
+            exams.Save(examfilename); //FIXME if the file cannot be writable the information will lost
         }
     }
 }

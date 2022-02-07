@@ -12,34 +12,38 @@ namespace Feladatlap
         private string html;
         private List<string> headerelements;
         private List<string> topics;
-        public HTMLcreator()
+        private int serialnum;
+        public HTMLcreator(int num)
         {
             headerelements = new List<string>();
             topics = new List<string>();
+            serialnum = num;
         }
 
         private void addHTMLHeader()
         {
             html = "<!DOCTYPE html>\n<html><head><style>\n" +
-                "@page {\nsize: A4;\nmargin:0;\n}\n" +
+                "@media print,screen {\n" +
+                "@page {\nsize: A4;\nmargin:0;width:100%;\n}\n" +
                 ".question { \n" +
-                "margin-bottom: 2cm;\n" +
+                "margin-bottom: 1cm;\n" +
                 "text-decoration: underline;\n" +
-                "font-size: 10px;\n" +
+                "font-size: 12px;\n" +
                 "}\n" +
                 ".answer {\n" +
-                "margin-bottom: 1cm;\n" +
+                "margin-bottom: 0.5cm;\n" +
                 "}\n" +
                 ".examheader {\n" +
                 "width: 100%;\n" +
                 "overflow: hidden;\n" +
-                "margin-bottom: 1cm;\n" +
+                "margin-bottom: 0.5cm;\n" +
+                "font-size: 10px;\n" +
                 "}\n" +
                 ".headerelement {\n" +
                 "width: 150px;\n" +
                 "float: left;\n" +
-                "}\n" +
-                "</style></head><body>\n";
+                "}\n}\n" +
+                "</style>\n<meta charset=\"UTF-8\">\n</head>\n<body>\n";
         }
 
         private void addHTMLFooter()
@@ -60,6 +64,7 @@ namespace Feladatlap
         public string toString(OutputType t)
         {
             addHTMLHeader();
+            setSerial();
             if(t == OutputType.QUESTION)
             {
                 generateExamHeader();
@@ -83,14 +88,19 @@ namespace Feladatlap
             }
         }
 
+        private void setSerial()
+        {
+            html = html + "<div>" + serialnum + "</div>\n";
+        }
+
         private void generateExamHeader()
         {
-            html = html + "<div class=\"examheader\">";
+            html = html + "<div class=\"examheader\">\n";
             foreach(string e in headerelements)
             {
-                html = html + "<div class=\"headerelement\">" + e + "</div>";
+                html = html + "<div class=\"headerelement\">" + e + "</div>\n";
             }
-            html = html + "</div>";
+            html = html + "</div>\n";
         }
     }
 }
